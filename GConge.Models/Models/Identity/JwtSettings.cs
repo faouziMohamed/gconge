@@ -1,6 +1,6 @@
 ﻿namespace GConge.Models.Models.Identity;
 
-public class JwtSettings
+public sealed class JwtSettings
 {
   public string Key { get; set; }
   public string Issuer { get; set; }

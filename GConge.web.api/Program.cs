@@ -1,22 +1,23 @@
-using GConge.web.api.Data;
-using Microsoft.EntityFrameworkCore;
+using GConge.web.api.Extensions;
+using GConge.web.api.Repositories;
+using GConge.web.api.Repositories.Contracts;
+using GConge.web.api.Services;
+using GConge.web.api.Services.Contracts;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-string? connectionString = builder.Configuration.GetConnectionString("MyDbConnection");
-var serverVersion = new MySqlServerVersion(ServerVersion.AutoDetect(connectionString));
-builder.Services.AddDbContext<GCongeDbContext>(options =>
-  options.UseMySql(connectionString, serverVersion)
-    .LogTo(Console.WriteLine, LogLevel.Information)
-    .EnableSensitiveDataLogging()
-    .EnableDetailedErrors()
-);
+builder.Services.AddMySqlContext(builder.Configuration);
+builder.Services.AddJwtService(builder.Configuration);
+
+builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ILeaveRequestRepository, LeaveRequestRepository>();
+builder.Services.AddSingleton<IJwtAuthenticationService, JwtAuthenticationService>();
 
 var app = builder.Build();
 
@@ -28,7 +29,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

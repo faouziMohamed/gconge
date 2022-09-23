@@ -1,5 +1,9 @@
 ﻿using GConge.Models.Models;
+using GConge.Models.Models.Entities;
+using GConge.Models.Utils;
 using Microsoft.EntityFrameworkCore;
+
+#pragma warning disable CS8618
 
 namespace GConge.web.api.Data;
 
@@ -14,6 +18,7 @@ public class GCongeDbContext : DbContext
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
+    byte[] pwd = Utils.HashPassword("password", salt: out byte[] salt);
     // Add admin user to the database
     modelBuilder.Entity<User>().HasData(new User
       {
@@ -21,11 +26,10 @@ public class GCongeDbContext : DbContext
         Firstname = "Admin",
         Lastname = "Admin",
         Email = "admin.email@email.com",
-        Role = "Admin",
-        Phone = "+212123456789",
-        Password = "admin"
-
-
+        Role = UserRole.Admin,
+        PhoneNumber = "+212123456789",
+        Password = pwd,
+        PasswordSalt = salt
       }
     );
   }
