@@ -10,6 +10,6 @@ public sealed class Employee : BaseDomainEntity
   public string Service { get; set; }
   public int UserId { get; set; }
 
-  [ForeignKey(nameof(UserId))]
+  [ForeignKey("UserId")]
   public User User { get; set; }
 }

@@ -18,9 +18,5 @@ public sealed class User : BaseDomainEntity
   public string Lastname { get; set; }
   public byte[] Password { get; set; }
   public string Role { get; set; } = UserRole.User;
-
-  [Phone]
-  public string PhoneNumber { get; set; }
-
   public byte[] PasswordSalt { get; set; }
 }

@@ -1,0 +1,90 @@
+﻿@page "/home"
+
+<PageTitle>Home</PageTitle>
+
+<div class="T">
+  <pre id="titre"> background</pre>
+  <header class="main">
+    <nav>
+      <h1 id="logo">G-Congé</h1>
+      <ul>
+        <li>
+          <a href="connexion.html">Deconnexion</a>
+        </li>
+        <li>
+          <a href="">Mes demandes</a>
+        </li>
+        <li>
+          <a href="#Form" id="button">Demmander congé</a>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="Form" id="Form">
+    <div class="Form-saisie">
+      <form methode="" id="form" action="">
+        <div class="Form-control">
+          <label for="nom" class="nom"> Nom: </label><br/><br/>
+          <input
+            type="text"
+            id="username"
+            name="nom"
+            placeholder="Entrez votre nom"/><br/><br/>
+          <i class="fa-solid fa-circle-check"></i>
+          <i class="fa-solid fa-exclamation"></i><br/>
+          <small>Error message</small>
+          <br/><br/>
+        </div>
+
+        <div class="Form-control">
+          <label for="prenom" class="prenom">Prenom:</label><br/><br/>
+          <input
+            type="text"
+            id="lastname"
+            name="prenom"
+            placeholder="Entrez votre Prenom"/><br/><br/>
+          <i class="fa-solid fa-circle-check"></i>
+          <i class="fa-solid fa-exclamation"></i><br/>
+          <small>Error message</small>
+        </div>
+        <br/><br/>
+
+        <div class="Form-control">
+          <label for="nom" class="service"> Service: </label><br/><br/>
+          <input type="text" id="service" name="service"/><br/><br/>
+          <i class="fa-solid fa-circle-check"></i>
+          <i class="fa-solid fa-exclamation"></i><br/>
+          <small>Error message</small>
+        </div>
+        <br/><br/>
+        <div class="Date">
+          <div class="Form-control">
+            <label for="date" class="Dd">Date_Debut:</label><br/><br/>
+            <input type="date" id="date1" name="debut"/><br/><br/>
+            <i class="fa-solid fa-circle-check"></i>
+            <i class="fa-solid fa-exclamation"></i>
+            <small>Error message</small>
+          </div>
+          <br/><br/>
+          <div class="Form-control">
+            <label for="date" class="Df">Date_Fin:</label><br/><br/>
+            <input type="date" id="date2" name="fin"/><br/><br/>
+            <i class="fa-solid fa-circle-check"></i>
+            <i class="fa-solid fa-exclamation"></i>
+            <small>Error message</small>
+          </div>
+        </div>
+        <br/><br/>
+        <div class="submit">
+          <input
+            type="submit"
+            name="submit"
+            value="Envoyer"
+            class="Btn"
+            id="btn"/>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,253 @@
+﻿* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    background-image: url(http://fnh.ma//uploads/actualites/5e088ab2b47f4.jpg);
+    background-size: cover;
+
+    font-size: 62.5%;
+}
+
+.T {
+    background-color: rgb(0, 0, 0, 0.7);
+    height: 700px;
+
+}
+
+#titre {
+    visibility: hidden;
+
+
+}
+
+body {
+    font-family: "Poppins", sans-serif;
+}
+
+h1 {
+    font-size: 2.6rem;
+}
+
+li {
+    font-size: 2rem;
+}
+
+.main {
+    background-color: #072916;
+    height: 5.6rem;
+    color: #ffffff;
+    margin-top: -1rem;
+}
+
+nav {
+    min-height: 10vh;
+    display: flex;
+    align-items: center;
+    margin: auto;
+    width: 90%;
+    padding: 2rem;
+
+}
+
+a {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 1.60rem;
+
+}
+
+a:hover {
+    background-color: rgb(216, 78, 27);
+    padding: 1rem;
+}
+
+@media screen and(max-width: 885px) {
+    nav {
+        text-align: center;
+    }
+
+}
+
+nav ul {
+    display: flex;
+    flex: 1 1 40rem;
+    justify-content: space-around;
+    align-items: center;
+    list-style: none;
+}
+
+#logo {
+    flex: 2 1 40rem;
+
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+
+
+}
+
+.Form-saisie input {
+    width: 24rem;
+    font-size: 16px;
+    outline: none;
+    color: black;
+    margin: 10px 0;
+    padding: 10px 5px 10px 30px;
+
+    border: 1px solid;
+    border-radius: 8px;
+}
+
+.Form-saisie input[type="submit"].Btn {
+    width: 100%;
+    font-size: 20px;
+    background-color: rgb(255, 94, 0);
+    border: rgb(255, 94, 0);
+    padding: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: center;
+
+
+}
+
+.Form-saisie input[type="submit"].Btn:hover {
+    color: antiquewhite;
+}
+
+.submit {
+    width: 20rem;
+    margin-left: 20rem;
+    margin-top: 10rem;
+
+}
+
+.Date {
+
+    margin-left: 36rem;
+    margin-top: -42rem;
+
+    width: 20rem;
+    font-size: 18px;
+
+}
+
+.Form-control label {
+    font-size: 18px;
+
+}
+
+
+.Form-text {
+    font-size: 36px;
+    font-weight: 600;
+    text-align: center;
+    padding-bottom: 30px;
+}
+
+.Form {
+    width: 70rem;
+    height: 55rem;
+    position: absolute;
+    /*margin: auto;*/
+    margin-bottom: -17rem;
+    left: 23%;
+    right: 0;
+    bottom: 0;
+    padding: 30px;
+    visibility: hidden;
+    box-shadow: 0 0 10px #000;
+    top: 9rem;
+    background: rgba(245, 245, 245, 0.548);
+    transition: all 0.4s;
+    opacity: 0;
+    display: flex;
+    align-items: center;
+
+
+}
+
+.Form:target {
+    visibility: visible;
+    opacity: 1;
+}
+
+
+.open {
+    visibility: visible;
+    transform: translate(-50%, -50%) scale(1);
+    top: 50%;
+
+}
+
+.Form-control input:focus {
+    outline: none;
+    border-color: #777;
+}
+
+.Form-control.success input {
+    border-color: rgb(0, 128, 0);
+
+}
+
+.Form-control.error input {
+    border-color: red;
+}
+
+.Form-control i {
+    visibility: hidden;
+    position: absolute;
+    margin-top: -5rem;
+    margin-left: 25rem;
+    font-size: 14px;
+}
+
+.Form-control.success i.fa-circle-check {
+    visibility: visible;
+    color: green;
+}
+
+.Form-control.error i.fa-exclamation {
+    visibility: visible;
+    color: red;
+}
+
+.Form-control small {
+    color: red;
+    position: absolute;
+    left: 3rem;
+    visibility: hidden;
+    margin-top: -2rem;
+    font-size: 13px;
+
+}
+
+.Form-control.error small {
+    visibility: visible;
+}
+
+.Date i {
+    visibility: hidden;
+    position: absolute;
+    margin-top: -6rem;
+    margin-left: 25rem;
+
+}
+
+.Date small {
+    color: red;
+    position: absolute;
+    left: 40rem;
+    visibility: hidden;
+    margin-top: -2rem;
+}

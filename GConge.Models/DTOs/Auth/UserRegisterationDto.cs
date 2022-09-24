@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
@@ -6,12 +7,11 @@
 
 namespace GConge.Models.DTOs.Auth;
 
-public sealed record UserRegisterRequestDto
+public record UserRegisterRequestDto
 {
-  [EmailAddress] public string Email { get; init; }
-  [Required] [MinLength(6)] public string Password { get; init; }
-  [Required] public string FirstName { get; init; }
-  [Required] public string LastName { get; init; }
-  [Phone] public string PhoneNumber { get; init; }
-  [Required] public string Service { get; init; }
+  [EmailAddress] public string Email { get; set; }
+  [Required] [MinLength(6)] [PasswordPropertyText] public string Password { get; set; }
+  [Required] public string FirstName { get; set; }
+  [Required] public string LastName { get; set; }
+  [Required] public string Service { get; set; }
 }

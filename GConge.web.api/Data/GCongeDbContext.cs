@@ -27,10 +27,11 @@ public class GCongeDbContext : DbContext
         Lastname = "Admin",
         Email = "admin.email@email.com",
         Role = UserRole.Admin,
-        PhoneNumber = "+212123456789",
         Password = pwd,
         PasswordSalt = salt
       }
     );
+
+    modelBuilder.Entity<Employee>().HasData(new Employee { Id = 1, UserId = 1, Service = "IT" });
   }
 }

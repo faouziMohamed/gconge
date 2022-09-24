@@ -2,6 +2,7 @@
 using GConge.Models.Models;
 using GConge.Models.Models.Entities;
 using GConge.Models.Utils;
+using GConge.web.api.Extensions;
 using GConge.web.api.Repositories.Contracts;
 using GConge.web.api.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
@@ -43,8 +44,7 @@ public class AuthController : ControllerBase
         PasswordSalt = passwordSalt,
         Firstname = request.FirstName,
         Lastname = request.LastName,
-        Role = isAdmin ? UserRole.Admin : UserRole.User,
-        PhoneNumber = request.PhoneNumber
+        Role = isAdmin ? UserRole.Admin : UserRole.User
       };
 
       var createdUser = await _userRepository.CreateUser(newUser);
@@ -54,9 +54,9 @@ public class AuthController : ControllerBase
         Service = request.Service
       };
 
-      await _employeeRepository.CreateEmployee(newEmployee);
+      var employee = await _employeeRepository.CreateEmployee(newEmployee);
 
-      return StatusCode(StatusCodes.Status201Created);
+      return StatusCode(StatusCodes.Status201Created, value: employee.ConvertToDto());
     }
     catch (Exception e)
     {
