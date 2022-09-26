@@ -1,0 +1,86 @@
+﻿.hero-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image: url('https://fnh.ma//uploads/actualites/5e088ab2b47f4.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100%;
+    width: 100%;
+}
+
+.hero-overlay::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.75);
+}
+
+.max-w-30 {
+    max-width: 30rem;
+}
+
+.w-fit {
+    width: fit-content;
+}
+
+.max-w-50 {
+    max-width: 50rem;
+}
+
+.max-w-30_125 {
+    max-width: 30.125rem;
+}
+
+.fw-600 {
+    font-weight: 600;
+}
+
+.text-2 {
+    font-size: 2rem;
+}
+
+::deep .text-xs {
+    font-size: 0.75rem;
+}
+
+.inset-0 {
+    inset: 0;
+}
+
+.form-title {
+    padding: .5rem;
+    margin: 0;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: .1rem;
+}
+
+.form-label {
+    display: flex;
+    gap: .5rem;
+    align-items: center;
+    font-style: normal;
+    padding-block: 2px;
+    font-size: 0.88rem;
+    margin: 0;
+}
+
+.form-submit-btn {
+    width: 100%;
+    font-size: 1.3rem;
+    background-color: rgb(255, 94, 0);
+    border: green;
+    padding: .37rem .1rem;
+    border-radius: 10px;
+    color: antiquewhite;
+}
+
+.form-submit-btn:hover {
+    background-color: rgb(220, 50, 0);
+    color: antiquewhite;
+}

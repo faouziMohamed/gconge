@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using GConge.Models.Models.Common;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,7 +17,7 @@ public sealed class User : BaseDomainEntity
 
   public string Firstname { get; set; }
   public string Lastname { get; set; }
-  public byte[] Password { get; set; }
+  [JsonIgnore] public byte[] Password { get; set; }
+  [JsonIgnore] public byte[] PasswordSalt { get; set; }
   public string Role { get; set; } = UserRole.User;
-  public byte[] PasswordSalt { get; set; }
 }

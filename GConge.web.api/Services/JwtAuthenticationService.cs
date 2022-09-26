@@ -4,6 +4,7 @@ using System.Text;
 using GConge.Models.Models.Entities;
 using GConge.Models.Models.Identity;
 using GConge.Models.Utils;
+using GConge.web.api.Models;
 using GConge.web.api.Services.Contracts;
 using Microsoft.IdentityModel.Tokens;
 
@@ -11,23 +12,6 @@ namespace GConge.web.api.Services;
 
 public sealed class JwtAuthenticationService : IJwtAuthenticationService
 {
-  public string GenerateToken(Employee employee, int expireMinutes)
-  {
-    bool isDevelopment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development";
-    var jwtSettings = Utils.GetConfig<JwtSettings>(isDevelopment);
-    var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key));
-    var credentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
-    var token = new JwtSecurityToken(
-      claims: GetClaims(employee),
-      issuer: jwtSettings.Issuer,
-      audience: jwtSettings.Audience,
-      expires: DateTime.Now.AddMinutes(expireMinutes),
-      signingCredentials: credentials
-    );
-
-    return new JwtSecurityTokenHandler().WriteToken(token);
-
-  }
 
   public bool InvalidateToken(string token)
   {
@@ -62,7 +46,7 @@ public sealed class JwtAuthenticationService : IJwtAuthenticationService
     };
   }
 
-  public bool ValidateToken(string token, out Employee? employee)
+  public bool ValidateToken(string token, out EmployeeClaim employee)
   {
     bool isDevelopment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development";
     var jwtSettings = Utils.GetConfig<JwtSettings>(isDevelopment);
@@ -92,18 +76,35 @@ public sealed class JwtAuthenticationService : IJwtAuthenticationService
     return true;
   }
 
-  public Employee GetEmployeeFromClaimsIdentity(ClaimsIdentity identity)
+  public EmployeeClaim GetEmployeeFromClaimsIdentity(ClaimsIdentity identity)
   {
     List<Claim> claims = identity.Claims.ToList();
     return GetEmployeeFromClaims(claims);
   }
-  public Employee GetEmployeeFromPrincipal(ClaimsPrincipal principal)
+  public EmployeeClaim GetEmployeeFromPrincipal(ClaimsPrincipal principal)
   {
     List<Claim> claims = principal.Claims.ToList();
     return GetEmployeeFromClaims(claims);
   }
+  public string GenerateToken(Employee employee, int? expireMinutes)
+  {
+    bool isDevelopment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development";
+    var jwtSettings = Utils.GetConfig<JwtSettings>(isDevelopment);
+    var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key));
+    var credentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
+    var token = new JwtSecurityToken(
+      claims: GetClaims(employee),
+      issuer: jwtSettings.Issuer,
+      audience: jwtSettings.Audience,
+      expires: DateTime.Now.AddMinutes(expireMinutes ?? jwtSettings.ExpirationInMinutes),
+      signingCredentials: credentials
+    );
 
-  private static Employee GetEmployeeFromClaims(IReadOnlyCollection<Claim> claims)
+    return new JwtSecurityTokenHandler().WriteToken(token);
+
+  }
+
+  private static EmployeeClaim GetEmployeeFromClaims(IReadOnlyCollection<Claim> claims)
   {
     string? email = claims.FirstOrDefault(static c => c.Type == ClaimTypes.Email)?.Value;
     string? role = claims.FirstOrDefault(static c => c.Type == ClaimTypes.Role)?.Value;
@@ -113,18 +114,15 @@ public sealed class JwtAuthenticationService : IJwtAuthenticationService
     string? service = claims.FirstOrDefault(static c => c.Type == ClaimTypes.UserData)?.Value;
     string? employeeId = claims.FirstOrDefault(static c => c.Type == ClaimTypes.Sid)?.Value;
 
-    return new Employee
+    return new EmployeeClaim
     {
-      Id = int.Parse(employeeId!),
+      EmployeeId = int.Parse(employeeId!),
       Service = service!,
-      User = new User
-      {
-        Email = email!,
-        Role = role!,
-        Firstname = firstname!,
-        Lastname = lastname!,
-        Id = int.Parse(id!)
-      }
+      Email = email!,
+      Role = role!,
+      Firstname = firstname!,
+      Lastname = lastname!,
+      UserId = int.Parse(id!)
     };
   }
 }

@@ -1,0 +1,112 @@
+﻿@using GConge.Models.Forms
+@* ReSharper disable  Html.TagShouldNotBeSelfClosed *@
+
+@code
+{
+#pragma warning disable CS8618
+  [Parameter]
+  public EventCallback OnSubmit { get; set; }
+
+  [Parameter]
+  public UserRegisterForm UserRegister { get; set; }
+
+#pragma warning restore CS8618
+
+  [Parameter]
+  public EventCallback<UserRegisterForm> UserRegisterChanged { get; set; }
+
+  private void OnValidSubmit(EditContext obj)
+  {
+    UserRegisterChanged.InvokeAsync(UserRegister);
+    OnSubmit.InvokeAsync();
+  }
+}
+
+<EditForm Model="@UserRegister" OnValidSubmit="OnValidSubmit">
+  <DataAnnotationsValidator/>
+  <div class="d-flex flex-column gap-3 ">
+    <div class="form-group">
+      <label for="firstName" class="form-label">
+        <i class="fas fa-user"/>
+        <span>
+          Entrez votre Prénom
+        </span>
+      </label>
+      <InputText @bind-Value="UserRegister.FirstName"
+                 class="form-control text-xs rounded" id="firstName" aria-describedby="firstName" placeholder="Entrez votre prénom"/>
+      <div class="text-xs">
+        <ValidationMessage For="@(() => UserRegister.FirstName)"/>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="lastName" class="form-label">
+        <i class="fas fa-user"/>
+        <span>
+          Entrez votre Nom
+        </span>
+      </label>
+      <InputText @bind-Value="@UserRegister.LastName" class="text-xs form-control rounded" id="lastName" aria-describedby="lastName" placeholder="Entrez votre nom"/>
+      <div class="text-xs">
+        <ValidationMessage For="@(() => UserRegister.LastName)"/>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="exampleInputEmail1" class="form-label">
+        <i class="fas fa-envelope"/>
+        <span>
+          Adresse Email
+        </span>
+      </label>
+      <InputText @bind-Value="@UserRegister.Email" class="text-xs form-control rounded" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Entrez email"/>
+      <small id="emailHelp" class="text-xs ">We'll never share your email with anyone else.</small>
+      <div class="text-xs">
+        <ValidationMessage For="@(() => UserRegister.Email)"/>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="password" class="form-label">
+        <i class="fas fa-lock"/>
+        <span>
+          Entrez un mot de passe
+        </span>
+      </label>
+      <InputText @bind-Value="@UserRegister.Password" type="password" class="text-xs form-control  rounded" id="password" aria-describedby="password" placeholder="Entre un mot de passe"/>
+      <div class="text-xs">
+        <ValidationMessage For="@(() => UserRegister.Password)"/>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="confirmPass" class="form-label">
+        <i class="fas fa-lock"/>
+        <span>
+          Confirmez votre mot de passe
+        </span>
+      </label>
+      <InputText @bind-Value="@UserRegister.ConfirmPassword" type="password" class="text-xs form-control  rounded" id="confirmPass" aria-describedby="confirmPass" placeholder="Confirmer votre mot de passe"/>
+      <div class="text-xs">
+        <ValidationMessage For="@(() => UserRegister.ConfirmPassword)"/>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="service" class="form-label">
+        <i class="fad fa-briefcase"/>
+        <span>
+          Saisissez votre service
+        </span>
+      </label>
+      <InputText @bind-Value="@UserRegister.Service" class="text-xs form-control rounded" id="service" aria-describedby="service" placeholder="Saisissez votre service"/>
+      <div class="text-xs">
+        <ValidationMessage For="@(() => UserRegister.Service)"/>
+      </div>
+    </div>
+    <button class="form-submit-btn btn " type="submit">S'inscrire</button>
+  </div>
+  <p class="small">
+    Êtes-vous déja inscrit ? <a href="/login">Connectez-vous</a>.
+  </p>
+</EditForm>

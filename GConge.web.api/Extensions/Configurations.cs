@@ -16,8 +16,8 @@ static public class Configurations
     var serverVersion = new MySqlServerVersion(ServerVersion.AutoDetect(connectionString));
     services.AddDbContext<GCongeDbContext>(options =>
       options.UseMySql(connectionString, serverVersion)
-        .LogTo(Console.WriteLine, LogLevel.Information)
-        .EnableSensitiveDataLogging()
+        // .LogTo(Console.WriteLine, LogLevel.Information)
+        // .EnableSensitiveDataLogging()
         .EnableDetailedErrors()
     );
 

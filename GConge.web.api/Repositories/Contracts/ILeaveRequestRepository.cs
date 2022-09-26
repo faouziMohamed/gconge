@@ -6,6 +6,7 @@ namespace GConge.web.api.Repositories.Contracts;
 public interface ILeaveRequestRepository
 {
   Task<LeaveRequest?> GetLeaveRequestById(int id);
+  Task<List<LeaveRequest>> GetLeaveRequestByEmployeeId(int id);
   Task<List<LeaveRequest>> GetLeaveRequests();
   Task<LeaveRequest> AddLeaveRequest(CreateLeaveRequestDto createLeaveRequestDto);
   Task<LeaveRequest> UpdateLeaveRequest(AdminUpdateLeaveRequestDto dto);

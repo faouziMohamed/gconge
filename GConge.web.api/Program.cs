@@ -3,7 +3,6 @@ using GConge.web.api.Repositories;
 using GConge.web.api.Repositories.Contracts;
 using GConge.web.api.Services;
 using GConge.web.api.Services.Contracts;
-using Microsoft.Net.Http.Headers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,7 +36,7 @@ app.UseCors(static policy => policy
     "http://localhost:7093"
   )
   .AllowAnyMethod()
-  .WithHeaders(HeaderNames.ContentType)
+  .AllowAnyHeader()
 );
 
 app.UseHttpsRedirection();

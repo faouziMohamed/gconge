@@ -1,37 +1,40 @@
-﻿using System.ComponentModel.DataAnnotations;
-using GConge.Models.DTOs.Auth;
+﻿using Blazored.LocalStorage;
+using GConge.Models.Forms;
 using GConge.Web.Client.Services.Contracts;
 using Microsoft.AspNetCore.Components;
 
 namespace GConge.Web.Client.Pages;
 
 public class RegisterBase : ComponentBase
-
 {
 
-  protected readonly UserRegisterForm userRegisterRequestDto = new();
+  protected bool IsLoading;
+  protected UserRegisterForm UserRegister = new();
 
   [Inject]
-  protected NavigationManager NavigationManager { get; set; }
+  protected NavigationManager Router { get; set; }
 
   [Inject]
   protected IAuthService AuthService { get; set; } = default!;
 
-  protected async Task OnSubmit()
+  [Inject]
+  private IUserLocalStorageService UserLocalStorage { get; set; } = default!;
+
+  [Inject]
+  private ILocalStorageService LocalStorage { get; set; } = default!;
+
+  protected async override Task OnInitializedAsync()
   {
-    Console.WriteLine($"{userRegisterRequestDto}");
-    var user = await AuthService.Register(userRegisterRequestDto);
+    IsLoading = true;
+    bool isConnected = await UserLocalStorage.CheckIfUserIsLoggedIn();
 
-    if (user is not null)
+    if (isConnected)
     {
-      NavigationManager.NavigateTo("/login");
-      Console.WriteLine($"Hello {user.FirstName} {user.LastName}, you are registered");
+      Router.NavigateTo("/LeaveRequests", true);
+      return;
     }
-  }
-}
 
-public sealed record UserRegisterForm : UserRegisterRequestDto
-{
-  [Required] [Compare(nameof(Password), ErrorMessage = "Les mots de passe ne correspondent pas")]
-  public string ConfirmPassword { get; set; } = default!;
+    await LocalStorage.ClearAsync();
+    IsLoading = false;
+  }
 }

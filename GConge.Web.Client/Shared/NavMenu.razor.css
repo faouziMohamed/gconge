@@ -1,3 +1,14 @@
+.btn-disconnect {
+    padding: 0.5rem 1rem;
+    width: 100%;
+    text-align: start;
+}
+
+.btn-disconnect:hover {
+    background: #0e3a73;
+    border: #0f4a63;
+}
+
 .navbar-toggler {
     background-color: rgba(255, 255, 255, 0.1);
 }

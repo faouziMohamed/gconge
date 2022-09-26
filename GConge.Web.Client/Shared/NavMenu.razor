@@ -1,6 +1,11 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@inherits NavMenuBase
+
+<div class="top-row ps-3 navbar navbar-dark">
   <div class="container-fluid">
-    <a class="navbar-brand" href="">GConge.Web.Client</a>
+    <a class="navbar-brand" href="">
+      <i class="fad fa-leaf text-info"/> &nbsp;
+      GCongé
+    </a>
     <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -10,25 +15,64 @@
 <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
   <nav class="flex-column">
     <div class="nav-item px-3">
-      <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-        <span class="oi oi-home" aria-hidden="true"></span> Home
+      <NavLink class="nav-link px-2" href="" Match="NavLinkMatch.All">
+        <span class="fas fa-home" aria-hidden="true"/> &nbsp;Accueil
       </NavLink>
     </div>
 
-    <div class="nav-item px-3">
-      <NavLink class="nav-link" href="Home">
-        <span class="oi oi-list-rich" aria-hidden="true"></span> Home
-      </NavLink>
-    </div>
-    <div class="nav-item px-3">
-      <NavLink class="nav-link" href="Register">
-        <span class="oi oi-list-rich" aria-hidden="true"></span> Inscription
-      </NavLink>
-    </div>
+    @if (ConnectedUser == null)
+    {
+      <div class="nav-item px-3">
+        <NavLink class="nav-link px-2" href="/login">
+          <i class="fas fa-sign-out-alt"/>&nbsp;Se connecter
+        </NavLink>
+      </div>
+      <div class="nav-item px-3">
+        <NavLink class="nav-link px-2" href="Register">
+          <i class="fas fa-user-plus"/>&nbsp;Inscription
+        </NavLink>
+      </div>
+    }
+    else
+    {
+      @switch (ConnectedUser.Role)
+      {
+        case UserRole.User:
+          <div class="nav-item px-3">
+            <NavLink class="nav-link px-2" href="Register">
+              <i class="fas fa-file-plus"/>&nbsp; Nouvelle demande
+            </NavLink>
+          </div>
+          <div class="nav-item px-3">
+            <NavLink class="nav-link px-2" href="myRequests">
+              <i class="fas fa-tasks"/>&nbsp; Mes demandes
+            </NavLink>
+          </div>
+          break;
+        case UserRole.Admin:
+          <div class="nav-item px-3">
+            <NavLink class="nav-link px-2" href="/manage-leaves">
+              <i class="fas fa-tasks-alt"/>&nbsp; Gérer les demandes
+            </NavLink>
+          </div>
+          <div class="nav-item px-3">
+            <NavLink class="nav-link px-2" href="/employees">
+              <i class="fas fa-users-cog"/>&nbsp; Gérer les employés
+            </NavLink>
+          </div>
+          break;
+      }
+      <div class="nav-item px-3">
+        <button class=" px-2 btn text-white nav-link btn-disconnect" @onclick="Disconnect">
+          <i class="fas fa-sign-out-alt"/>&nbsp;Se déconnecter
+        </button>
+      </div>
+    }
   </nav>
 </div>
 
 @code {
+
   private bool collapseNavMenu = true;
 
   private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
@@ -37,4 +81,5 @@
   {
     collapseNavMenu = !collapseNavMenu;
   }
+
 }

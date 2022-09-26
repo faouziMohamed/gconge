@@ -1,0 +1,63 @@
+﻿@inherits NewLeaveRequestBase
+
+@code {
+    protected const string ModalId = "AddNewLeave";
+}
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#@ModalId">
+  <i class="fas fa-plus"/> Nouvelle demande
+</button>
+
+<Modal Id="@ModalId" Title="Nouvelle demande de congé">
+  <EditForm Model="@AddNewLeave" OnValidSubmit="OnSave" class="position-relative ">
+    <DataAnnotationsValidator/>
+    @if (IsLoading)
+    {
+      <DisplaySpinner ClassName="bg-opacity-0"/>
+    }
+    @if (ConnectedUser.Role == UserRole.Admin)
+    {
+      <div class="form-group">
+        <label for="EmployeeId">Choisissez l'employé</label>
+        <select class="form-select" aria-label="Default select example"
+                id="EmployeeId" name="EmployeeList" @bind="@AddNewLeave.EmployeeId" required>
+          <option value="@(ConnectedUser.EmployeeId)">@ConnectedUser.LastName @ConnectedUser.FirstName </option>
+          @foreach (var employee in EmployeesList)
+          {
+            <option value="@(employee.EmployeeId)">@employee.LastName @employee.FirstName </option>
+          }
+        </select>
+        <ValidationMessage For="@(() => AddNewLeave.EmployeeId)"/>
+      </div>
+    }
+    <div class="form-group">
+      <label for="LeaveType">Sélectionnez un type de congé</label>
+      <select Id="LeaveType" @bind-Value="AddNewLeave.LeaveType" @bind-Value:event="onchange" class="form-control">
+        @foreach (string item in LeaveTypesValues)
+        {
+          <option value="@item">@item</option>
+        }
+      </select>
+      <ValidationMessage For="@(() => AddNewLeave.LeaveType)"/>
+    </div>
+    <div class="form-group">
+      <label for="StartDate">Date de début</label>
+      <InputDate Id="StartDate" @bind-Value="AddNewLeave.StartDate" class="form-control"/>
+      <ValidationMessage For="@(() => AddNewLeave.StartDate)"/>
+    </div>
+    <div class="form-group">
+      <label for="EndDate">Date de fin</label>
+      <InputDate Id="EndDate" @bind-Value="AddNewLeave.EndDate" class="form-control"/>
+      <ValidationMessage For="@(() => AddNewLeave.EndDate)"/>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" disabled="@IsLoading">
+        <i class="fas fa-times"></i> Fermer
+      </button>
+      <button type="submit" class="btn btn-primary btn-save" disabled="@IsLoading">
+        <i class="fas fa-plus"></i> Ajouter
+      </button>
+    </div>
+  </EditForm>
+</Modal>

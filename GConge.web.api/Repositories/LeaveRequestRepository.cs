@@ -2,6 +2,7 @@
 using GConge.Models.Models;
 using GConge.Models.Models.Entities;
 using GConge.web.api.Data;
+using GConge.web.api.Extensions;
 using GConge.web.api.Repositories.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -18,18 +19,28 @@ public sealed class LeaveRequestRepository : ILeaveRequestRepository
   public async Task<LeaveRequest?> GetLeaveRequestById(int id)
   {
     return await _context.LeaveRequests
-      .Include(static lvr => lvr.RequestingEmployee)
+      .IncludeEmployees()
       .FirstOrDefaultAsync(x => x.Id == id);
+  }
+  public async Task<List<LeaveRequest>> GetLeaveRequestByEmployeeId(int id)
+  {
+    return await _context.LeaveRequests
+      .IncludeEmployees()
+      .Where(x => x.RequestingEmployeeId == id)
+      .ToListAsync();
   }
   public async Task<List<LeaveRequest>> GetLeaveRequests()
   {
     return await _context.LeaveRequests
-      .Include(static lvr => lvr.RequestingEmployee)
+      .IncludeEmployees()
       .ToListAsync();
   }
   public async Task<LeaveRequest> DeleteLeaveRequest(int id)
   {
-    var leaveRequest = await _context.LeaveRequests.FindAsync(id);
+    var leaveRequest = await _context
+      .LeaveRequests
+      .IncludeEmployees()
+      .FirstOrDefaultAsync(x => x.Id == id);
 
     if (leaveRequest == null)
     {
@@ -72,6 +83,7 @@ public sealed class LeaveRequestRepository : ILeaveRequestRepository
       StartDate = leaveRequest.StartDate,
       EndDate = leaveRequest.EndDate,
       Status = LeaveRequestStatus.Pending,
+      LeaveType = leaveRequest.LeaveType,
       DateRequested = DateTime.Now
     };
 
@@ -115,14 +127,13 @@ public sealed class LeaveRequestRepository : ILeaveRequestRepository
   private async Task<LeaveRequest?> UpdateLeaveRequestStatus(int id, string status)
   {
     var leaveRequest = await _context.LeaveRequests
-      .Include(static lvr => lvr.RequestingEmployee)
+      .IncludeEmployees()
       .FirstOrDefaultAsync(x => x.Id == id);
 
     if (leaveRequest is null) return null;
     leaveRequest.Status = status;
     _context.LeaveRequests.Update(leaveRequest);
     await _context.SaveChangesAsync();
-
     return leaveRequest;
   }
 }

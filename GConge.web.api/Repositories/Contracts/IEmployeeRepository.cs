@@ -11,4 +11,6 @@ public interface IEmployeeRepository
   Task<Employee> UpdateEmployee(Employee employee);
   Task<Employee?> DeleteEmployee(int id);
   Task<bool> EmployeeExists(int id);
+  Task<List<Employee>> SearchEmployees(string search);
+  Task<Employee?> GetEmployeeByEmail(string email);
 }

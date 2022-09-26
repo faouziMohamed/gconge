@@ -4,6 +4,7 @@ namespace GConge.Web.Client.Services.Contracts;
 
 public interface IAuthService
 {
-  Task<UserResponseDto?> Login(UserLoginRequestDto loginRequestDto);
-  Task<UserResponseDto?> Register(UserRegisterRequestDto registerRequestDto);
+  Task<UserDto?> Login(UserLoginRequestDto loginRequestDto);
+  Task<UserDto?> Register(UserRegisterRequestDto registerRequestDto);
+  Task<UserDto?> GetUserByToken(string bearerToken);
 }

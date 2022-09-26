@@ -1,0 +1,51 @@
+﻿@* ReSharper disable Html.TagShouldNotBeSelfClosed *@
+
+@code
+{
+#pragma warning disable CS8618
+  [Parameter]
+  public LeaveRequestDto Row { get; set; }
+
+  [Parameter]
+  public UserDto CurrentUser { get; set; }
+}
+
+<tr>
+  <td class="rx-2">@Row.Employee.FirstName</td>
+  <td class="px-2">@Row.Employee.LastName</td>
+  <td class="px-2">@Row.LeaveType</td>
+  <td class="px-2">@Row.Employee.Service</td>
+  <td class="px-2">@Row.StartDate.ToString("dd/MM/yyyy")</td>
+  <td class="px-2">@Row.EndDate.ToString("dd/MM/yyyy")</td>
+  <td class="px-2 text-center">
+    @switch (CurrentUser.Role)
+    {
+      case UserRole.Admin:
+        <div class="d-flex gap-1 ">
+          <button class="btn fs-3 p-1">
+            <i class="fas fa-check-circle text-success "/>
+          </button>
+          <button class="btn fs-3 p-1">
+            <i class="fas fa-times-circle text-danger"/>
+          </button>
+        </div>
+        break;
+      case UserRole.User:
+        @Row.Status
+        break;
+    }
+  </td>
+  <td class="px-2">
+    <button class="btn fs-3 text-success">
+      <i class="fas fa-pencil "/>
+    </button>
+  </td>
+  @if (CurrentUser.Role == UserRole.Admin)
+  {
+    <td class="pl-2">
+      <a href="LeaveRow/1/delete">
+        <i class="fas fa-trash"/>
+      </a>
+    </td>
+  }
+</tr>

@@ -85,4 +85,17 @@ public sealed class EmployeeRepository : IEmployeeRepository
   {
     return await _db.Employees.AnyAsync(e => e.Id == id);
   }
+  public async Task<List<Employee>> SearchEmployees(string search)
+  {
+    return await _db.Employees
+      .Include(static e => e.User)
+      .Where(e => e.User.Firstname.Contains(search) || e.User.Lastname.Contains(search) || e.User.Email.Contains(search))
+      .ToListAsync();
+  }
+  public Task<Employee?> GetEmployeeByEmail(string email)
+  {
+    return _db.Employees
+      .Include(static u => u.User)
+      .FirstOrDefaultAsync(e => e.User.Email == email);
+  }
 }

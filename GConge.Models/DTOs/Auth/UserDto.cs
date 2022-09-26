@@ -1,7 +1,7 @@
 ﻿namespace GConge.Models.DTOs.Auth;
 #pragma warning disable CS8618
 
-public record UserResponseDto
+public record UserDto
 {
   public string FirstName { get; init; }
   public string LastName { get; init; }

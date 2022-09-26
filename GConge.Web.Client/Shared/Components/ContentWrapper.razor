@@ -1,0 +1,11 @@
+﻿<div class="position-absolute inset-0 p-4 overflow-auto w-100 h-100">
+  @ChildContent
+</div>
+
+@code{
+
+  [Parameter]
+#pragma warning disable CS8618
+    public RenderFragment ChildContent { get; set; }
+
+}

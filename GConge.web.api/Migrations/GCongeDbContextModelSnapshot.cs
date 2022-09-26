@@ -58,9 +58,9 @@ namespace GConge.web.api.Migrations
                         {
                             Id = 1,
                             CreatedBy = "System",
-                            DateCreated = new DateTime(2022, 9, 23, 22, 22, 21, 184, DateTimeKind.Local).AddTicks(7511),
+                            DateCreated = new DateTime(2022, 9, 26, 9, 41, 17, 938, DateTimeKind.Local).AddTicks(4941),
                             LastModifiedBy = "System",
-                            LastModifiedDate = new DateTime(2022, 9, 23, 22, 22, 21, 184, DateTimeKind.Local).AddTicks(7517),
+                            LastModifiedDate = new DateTime(2022, 9, 26, 9, 41, 17, 938, DateTimeKind.Local).AddTicks(4947),
                             Service = "IT",
                             UserId = 1
                         });
@@ -94,6 +94,10 @@ namespace GConge.web.api.Migrations
 
                     b.Property<DateTime>("LastModifiedDate")
                         .HasColumnType("datetime(6)");
+
+                    b.Property<string>("LeaveType")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<int>("RequestingEmployeeId")
                         .HasColumnType("int");
@@ -168,14 +172,14 @@ namespace GConge.web.api.Migrations
                         {
                             Id = 1,
                             CreatedBy = "System",
-                            DateCreated = new DateTime(2022, 9, 23, 22, 22, 21, 184, DateTimeKind.Local).AddTicks(7294),
+                            DateCreated = new DateTime(2022, 9, 26, 9, 41, 17, 938, DateTimeKind.Local).AddTicks(4739),
                             Email = "admin.email@email.com",
                             Firstname = "Admin",
                             LastModifiedBy = "System",
-                            LastModifiedDate = new DateTime(2022, 9, 23, 22, 22, 21, 184, DateTimeKind.Local).AddTicks(7340),
+                            LastModifiedDate = new DateTime(2022, 9, 26, 9, 41, 17, 938, DateTimeKind.Local).AddTicks(4803),
                             Lastname = "Admin",
-                            Password = new byte[] { 0, 246, 190, 224, 41, 33, 204, 251, 104, 169, 250, 56, 220, 161, 201, 117, 62, 103, 246, 64, 63, 62, 80, 50, 65, 147, 215, 215, 225, 222, 100, 99, 118, 6, 169, 97, 46, 163, 162, 50, 68, 207, 159, 165, 81, 141, 47, 25, 21, 97, 87, 3, 103, 32, 211, 168, 225, 28, 217, 90, 133, 191, 250, 21 },
-                            PasswordSalt = new byte[] { 109, 129, 206, 88, 196, 0, 217, 106, 65, 180, 158, 41, 246, 137, 199, 181, 180, 41, 48, 4, 70, 176, 181, 229, 205, 29, 53, 77, 18, 122, 66, 168, 28, 24, 67, 70, 131, 177, 164, 75, 89, 193, 43, 33, 147, 161, 68, 37, 120, 155, 185, 205, 200, 25, 8, 57, 237, 220, 8, 243, 215, 106, 244, 162, 61, 48, 221, 56, 95, 69, 102, 158, 9, 26, 160, 87, 77, 28, 97, 237, 162, 169, 78, 119, 176, 144, 124, 182, 182, 240, 116, 167, 68, 247, 236, 14, 247, 12, 66, 95, 163, 170, 71, 29, 83, 191, 151, 142, 211, 151, 90, 255, 175, 59, 21, 48, 196, 155, 167, 23, 126, 106, 191, 85, 80, 172, 55, 181 },
+                            Password = new byte[] { 97, 82, 41, 175, 159, 92, 253, 137, 180, 188, 29, 159, 104, 74, 243, 202, 2, 112, 218, 74, 18, 155, 33, 118, 61, 101, 35, 136, 240, 90, 153, 92, 200, 35, 142, 33, 3, 100, 95, 163, 24, 85, 76, 1, 169, 4, 104, 163, 191, 233, 189, 178, 167, 232, 30, 40, 159, 117, 83, 67, 68, 124, 71, 150 },
+                            PasswordSalt = new byte[] { 154, 171, 112, 77, 129, 15, 89, 110, 182, 198, 218, 195, 205, 183, 104, 151, 204, 4, 176, 180, 116, 95, 69, 118, 71, 253, 119, 0, 226, 164, 115, 243, 178, 206, 253, 138, 71, 35, 89, 77, 201, 207, 125, 90, 6, 253, 78, 57, 55, 249, 124, 87, 180, 177, 235, 126, 182, 87, 80, 26, 172, 236, 46, 46, 196, 125, 150, 93, 32, 24, 175, 217, 138, 169, 45, 193, 156, 54, 254, 196, 76, 147, 205, 229, 158, 47, 247, 188, 198, 43, 83, 248, 151, 71, 15, 213, 45, 189, 248, 247, 11, 12, 91, 30, 30, 3, 255, 241, 191, 90, 106, 249, 239, 45, 34, 102, 140, 228, 137, 2, 222, 190, 197, 195, 132, 67, 148, 253 },
                             Role = "Admin"
                         });
                 });

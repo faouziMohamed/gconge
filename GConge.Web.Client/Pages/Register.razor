@@ -1,83 +1,63 @@
-﻿@page "/register"
+﻿@* ReSharper disable Html.TagShouldNotBeSelfClosed *@
+@page "/register"
 @inherits RegisterBase
 
-<div class="hero-overlay"></div>
-<div class=" d-flex w-100 justify-content-center">
-
-  <div class="bg-opacity-50 d-flex flex-column align-items-center p-3 bg-dark text-white rounded-5 border w-100 max-w-30_125 px-3">
-    <p class="form-title text-center fw-600 text-2">Inscription</p>
-    <div class="w-100 ">
-      <EditForm Model="@userRegisterRequestDto" OnValidSubmit="() => OnSubmit()">
-        <DataAnnotationsValidator/>
-        <ValidationSummary/>
-        <div class="d-flex flex-column gap-3 ">
-          <div class="form-group">
-            <label for="firstName" class="form-label">
-              <i class="fas fa-user"/>
-              <span>
-                Entrez votre Prénom
-              </span>
-            </label>
-            <InputText @bind-Value="userRegisterRequestDto.FirstName" class="form-control text-xs form-control-lg" id="firstName" aria-describedby="firstName" placeholder="Entre votre prénom"/>
+@if (IsLoading)
+{
+  <DisplaySpinner ClassName="bg-opacity-0"/>
+}
+else
+{
+  <div class="hero-overlay"/>
+  <ContentWrapper>
+    <div class=" d-flex w-100 justify-content-center">
+      <div class="position-relative bg-opacity-50 d-flex flex-column p-3 bg-dark text-white rounded-5 border w-100 max-w-30_125 px-3">
+        <p class="form-title text-center fw-600 text-2">Inscription</p>
+        @if (IsLoading)
+        {
+          <DisplaySpinner/>
+        }
+        @* Show here error from the server when login failed *@
+        @if (_errorFromServer != null)
+        {
+          <div class="error-from-server ">
+            <p class="text-danger text-xs">
+              <i class="fad fa-times"/>
+              @_errorFromServer
+            </p>
           </div>
-
-          <div class="form-group">
-            <label for="lastName" class="form-label">
-              <i class="fas fa-user"/>
-              <span>
-                Entrez votre Nom
-              </span>
-            </label>
-            <InputText @bind-Value="@userRegisterRequestDto.LastName"class="text-xs form-control form-control-lg" id="lastName" aria-describedby="lastName" placeholder="Entre votre nom"/>
-          </div>
-
-          <div class="form-group">
-            <label for="exampleInputEmail1" class="form-label">
-              <i class="fas fa-envelope"/>
-              <span>
-                Email address
-              </span>
-            </label>
-            <InputText @bind-Value="@userRegisterRequestDto.Email" class="text-xs form-control form-control-lg" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email"/>
-            <small id="emailHelp" class="text-xs ">We'll never share your email with anyone else.</small>
-          </div>
-
-          <div class="form-group">
-            <label for="password" class="form-label">
-              <i class="fas fa-lock"/>
-              <span>
-                Entrez un mot de passe
-              </span>
-            </label>
-            <InputText @bind-Value="@userRegisterRequestDto.Password" type="password" class="text-xs form-control  form-control-lg" id="password" aria-describedby="password" placeholder="Entre un mot de passe"/>
-          </div>
-
-          <div class="form-group">
-            <label for="confirmPass" class="form-label">
-              <i class="fas fa-lock"/>
-              <span>
-                Confirmez votre mot de passe
-              </span>
-            </label>
-            <InputText @bind-Value="@userRegisterRequestDto.ConfirmPassword" type="password" class="text-xs form-control  form-control-lg" id="confirmPass" aria-describedby="confirmPass" placeholder="Confirmer votre mot de passe"/>
-          </div>
-
-          <div class="form-group">
-            <label for="service" class="form-label">
-              <i class="fad fa-briefcase"/>
-              <span>
-                Saisissez votre service
-              </span>
-            </label>
-            <InputText @bind-Value="@userRegisterRequestDto.Service" class="text-xs form-control form-control-lg" id="service" aria-describedby="service" placeholder="Saisissez votre service"/>
-          </div>
-          <button class="form-submit-btn btn " type="submit">S'inscrire</button>
+        }
+        <div class="w-100 ">
+          <RegisterForm OnSubmit="OnSubmit" @bind-UserRegister="@UserRegister"/>
         </div>
-        <p class="small">
-          Êtes-vous déja inscrit ? <a href="/login">Connectez-vous</a>.
-        </p>
-      </EditForm>
+      </div>
     </div>
-  </div>
+  </ContentWrapper>
+}
 
-</div>
+@code {
+  private string? _errorFromServer;
+  protected async Task OnSubmit()
+  {
+    IsLoading = true;
+    try
+    {
+      var user = await AuthService.Register(UserRegister);
+      if (user is not null)
+      {
+        Router.NavigateTo($"/login?email={UserRegister.Email}");
+        Console.WriteLine($"Hello {user.FirstName} {user.LastName}, you are registered");
+        return;
+      }
+      _errorFromServer = "Une erreur est survenue lors de l'inscription";
+    }
+    catch (Exception e)
+    {
+      _errorFromServer = e.Message;
+    }
+    finally
+    {
+      IsLoading = false;
+    }
+  }
+}

@@ -1,0 +1,74 @@
+﻿@* ReSharper disable Html.TagShouldNotBeSelfClosed *@
+@page "/leave-requests"
+@page "/manage-leaves"
+@page "/manage-requests"
+@inherits LeaveRequestBase
+
+<ContentWrapper>
+  <div class="container">
+    <h1>
+      Liste des demandes
+    </h1>
+    @if (!LeaveRequests.Any() && ErrorMessage == null && IsLoading)
+    {
+      <DisplaySpinner ClassName="bg-opacity-0"/>
+    }
+    else if (!IsLoading && ErrorMessage != null)
+    {
+      <div class="alert alert-danger" role="alert">
+        <p class="text-danger text-xs">
+          <i class="fad fa-times"/>
+          @ErrorMessage
+        </p>
+      </div>
+    }
+    else if (!LeaveRequests.Any())
+    {
+      <div class="alert alert-info" role="alert">
+        <p class="text-info text-xs">
+          <i class="fad fa-info-circle"/>
+          Aucune demande de congé n'a été trouvée.
+        </p>
+      </div>
+
+      <a href="LeaveRequest/new" class="btn btn-primary text-white">
+        <i class="fas fa-plus-square"></i> &nbsp; Nouveau demande
+      </a>
+      <NewLeaveRequest
+        @bind-AddedLeave=NewAddedLeaveRequest
+        ConnectedUser="ConnectedUser"
+        OnSubmit="OnSubmit"/>
+    }
+    else
+    {
+      <NewLeaveRequest
+        @bind-AddedLeave=NewAddedLeaveRequest
+        ConnectedUser="ConnectedUser"
+        OnSubmit="OnSubmit"/>
+      <table class="table">
+        <tr id="items">
+          <th class="pr-2">Nom</th>
+          <th class="px-2">Prénom</th>
+          <th class="px-2">Type de congé</th>
+          <th class="px-2">Service</th>
+          <th class="px-2">Date debut</th>
+          <th class="px-2">Date fin</th>
+
+          <th class="px-0 text-center text-w">
+            Décision du responsable
+          </th>
+
+          <th class="px-2">Modifier</th>
+          @if (ConnectedUser!.Role == UserRole.Admin)
+          {
+            <th class="pl-2">Supprimer</th>
+          }
+        </tr>
+        @foreach (var request in LeaveRequests)
+        {
+          <DisplayRowOfLeaveRequest Row="@request" CurrentUser="@ConnectedUser"/>
+        }
+      </table>
+    }
+  </div>
+</ContentWrapper >

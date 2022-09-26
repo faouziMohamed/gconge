@@ -11,7 +11,8 @@ public class LeaveRequest : BaseDomainEntity
   public DateTime DateUpdated { get; set; } = DateTime.Now;
   public string Status { get; set; } = LeaveRequestStatus.Pending;
   public int RequestingEmployeeId { get; set; }
+  public string LeaveType { get; set; }
 
   [ForeignKey("RequestingEmployeeId")]
-  public Employee RequestingEmployee { get; set; } = new();
+  public Employee RequestingEmployee { get; set; }
 }

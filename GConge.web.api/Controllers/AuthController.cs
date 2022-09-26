@@ -66,7 +66,7 @@ public class AuthController : ControllerBase
 
   [AllowAnonymous]
   [HttpPost("login")]
-  [ProducesResponseType(type: typeof(UserResponseDto), StatusCodes.Status200OK)]
+  [ProducesResponseType(type: typeof(UserDto), StatusCodes.Status200OK)]
   public async Task<IActionResult> Login([FromBody] UserLoginRequestDto request)
   {
     try
@@ -76,12 +76,11 @@ public class AuthController : ControllerBase
 
       bool passwordMatch = Utils.VerifyHashedPassword(request.Password, user.Password, user.PasswordSalt);
       if (!passwordMatch) return BadRequest("Incorrect password.");
-      int extraTime = request.RememberMe ? 120 : 0;
-      var employee = await _employeeRepository.GetEmployeeByUserId(user.Id);
-      string token = _jwtAuthenticationService
-        .GenerateToken(user: employee!, extraTime);
 
-      var userResponseDto = new UserResponseDto
+      var employee = await _employeeRepository.GetEmployeeByUserId(user.Id);
+      string token = _jwtAuthenticationService.GenerateToken(user: employee!);
+
+      var userResponseDto = new UserDto
       {
         FirstName = user.Firstname,
         LastName = user.Lastname,

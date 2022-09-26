@@ -1,15 +1,16 @@
-﻿using GConge.Models.DTOs.Common;
-using GConge.Models.Models.Entities;
+﻿using System.ComponentModel.DataAnnotations;
+using GConge.Models.DTOs.Employees;
+using GConge.Models.Models;
 
 namespace GConge.Models.DTOs.LeaveRequest;
 
-public class LeaveRequestDto : BaseDto
+public sealed record LeaveRequestDto
 {
-  public DateTime StartDate { get; set; }
-  public DateTime EndDate { get; set; }
-  public Employee Employee { get; set; }
-  public string RequestingEmployeeId { get; set; }
-  public DateTime DateRequested { get; set; }
-  public bool? Approved { get; set; }
-  public bool Cancelled { get; set; }
+  [Required] public int LeaveRequestId { get; init; }
+  [Required] public DateTime StartDate { get; init; }
+  [Required] public DateTime EndDate { get; init; }
+  [Required] public EmployeeDto Employee { get; init; }
+  [Required] public DateTime DateRequested { get; init; }
+  [Required] public string Status { get; init; } = LeaveRequestStatus.Pending;
+  public string LeaveType { get; init; }
 }

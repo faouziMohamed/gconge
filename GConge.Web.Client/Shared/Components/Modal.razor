@@ -1,0 +1,27 @@
+﻿@code {
+
+  [Parameter]
+  public RenderFragment ChildContent { get; set; }
+
+  [Parameter]
+  public string Title { get; set; }
+
+  [Parameter]
+  public string Id { get; set; }
+
+}
+
+<!-- Modal -->
+<div class="modal fade" id="@Id" tabindex="-1" aria-labelledby="newRequest" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="newRequest">@Title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        @ChildContent
+      </div>
+    </div>
+  </div>
+</div>
