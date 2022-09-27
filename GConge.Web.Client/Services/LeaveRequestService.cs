@@ -47,10 +47,10 @@ public class LeaveRequestService : ILeaveRequestService
     var leave = await response.Content.ReadFromJsonAsync<LeaveRequestDto>();
     return leave!;
   }
-  public async Task<LeaveRequestDto?> UpdateLeaveRequest(AdminUpdateLeaveRequestDto leaveRequest)
+  public async Task<LeaveRequestDto?> UpdateLeaveRequest(UpdateLeaveRequestDto leaveRequest)
   {
     await AddBearerTokenToHeader();
-    var response = await _httpClient.PutAsJsonAsync("api/Leave", leaveRequest);
+    var response = await _httpClient.PutAsJsonAsync("api/Leave/update", leaveRequest);
     if (!response.IsSuccessStatusCode) return null;
     var leave = await response.Content.ReadFromJsonAsync<LeaveRequestDto>();
     return leave;
@@ -58,7 +58,7 @@ public class LeaveRequestService : ILeaveRequestService
   public async Task<LeaveRequestDto?> ApproveLeaveRequest(int leaveRequestId)
   {
     await AddBearerTokenToHeader();
-    var response = await _httpClient.PatchAsync(requestUri: $"api/Leave/approve/{leaveRequestId}", null);
+    var response = await _httpClient.PatchAsync(requestUri: $"api/Leave/{leaveRequestId}/approve", null);
     if (!response.IsSuccessStatusCode) return null;
     var leave = await response.Content.ReadFromJsonAsync<LeaveRequestDto>();
     return leave;
@@ -66,15 +66,15 @@ public class LeaveRequestService : ILeaveRequestService
   public async Task<LeaveRequestDto?> RejectLeaveRequest(int leaveRequestId)
   {
     await AddBearerTokenToHeader();
-    var response = await _httpClient.PatchAsync(requestUri: $"api/Leave/reject/{leaveRequestId}", null);
+    var response = await _httpClient.PatchAsync(requestUri: $"api/Leave/{leaveRequestId}/reject", null);
     if (!response.IsSuccessStatusCode) return null;
     var leave = await response.Content.ReadFromJsonAsync<LeaveRequestDto>();
     return leave;
   }
-  public async Task<LeaveRequestDto?> CancelLeaveRequest(int leaveRequestId)
+  public async Task<LeaveRequestDto?> CancelLeaveRequest(int leaveRequestId, int employeeId)
   {
     await AddBearerTokenToHeader();
-    var response = await _httpClient.PatchAsync(requestUri: $"api/Leave/cancel/{leaveRequestId}", null);
+    var response = await _httpClient.PatchAsync(requestUri: $"api/Leave/{leaveRequestId}/cancel/by/{employeeId}", null);
     if (!response.IsSuccessStatusCode) return null;
     var leave = await response.Content.ReadFromJsonAsync<LeaveRequestDto>();
     return leave;
@@ -82,7 +82,7 @@ public class LeaveRequestService : ILeaveRequestService
   public async Task<LeaveRequestDto?> DeleteLeaveRequest(int leaveRequestId)
   {
     await AddBearerTokenToHeader();
-    var response = await _httpClient.DeleteAsync($"api/Leave/{leaveRequestId}");
+    var response = await _httpClient.DeleteAsync($"api/Leave/{leaveRequestId}/delete");
     if (!response.IsSuccessStatusCode) return null;
     var leave = await response.Content.ReadFromJsonAsync<LeaveRequestDto>();
     return leave;

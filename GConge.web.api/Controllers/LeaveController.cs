@@ -162,14 +162,15 @@ public class LeaveController : ControllerBase
     }
   }
 
-  [HttpPatch("{leaveRequestId:int}/cancel")]
-  [Authorize(Roles = UserRole.User)]
+  [Authorize]
+  [HttpPatch("{leaveRequestId:int}/cancel/by/{employeeId:int}")]
   public async Task<ActionResult> CancelLeaveRequest(int leaveRequestId, int employeeId)
   {
     try
     {
       if (!HasUserAccessToThisResource(employeeId))
       {
+        Console.WriteLine($"Unauthorized {employeeId}");
         return Unauthorized("You are not authorized to access this resource");
       }
 
@@ -187,7 +188,7 @@ public class LeaveController : ControllerBase
     }
   }
 
-  [HttpDelete("{leaveRequestId:int}")]
+  [HttpDelete("{leaveRequestId:int}/delete")]
   [Authorize(Roles = UserRole.Admin)]
   public async Task<ActionResult> Delete(int leaveRequestId)
   {
@@ -208,15 +209,14 @@ public class LeaveController : ControllerBase
     }
   }
 
-  [HttpPut]
-  [Authorize(Roles = UserRole.Admin)]
-  public async Task<ActionResult> Update([FromBody] AdminUpdateLeaveRequestDto request)
+  [HttpPut("update")]
+  public async Task<ActionResult> Update([FromBody] UpdateLeaveRequestDto request)
   {
     try
     {
-      if (!await _leaveRequestRepository.LeaveRequestExists(request.Id))
+      if (!await _leaveRequestRepository.LeaveRequestExists(request.LeaveRequestId))
       {
-        return NotFound($"No record found for this leaveRequestId {request.Id}");
+        return NotFound($"No record found for this leaveRequestId {request.LeaveRequestId}");
       }
 
       var updated = await _leaveRequestRepository.UpdateLeaveRequest(request);

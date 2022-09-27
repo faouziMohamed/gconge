@@ -1,22 +1,14 @@
 ﻿@inherits NewLeaveRequestBase
 
-@code {
-    protected const string ModalId = "AddNewLeave";
-}
 
-<!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#@ModalId">
-  <i class="fas fa-plus"/> Nouvelle demande
-</button>
-
-<Modal Id="@ModalId" Title="Nouvelle demande de congé">
+<Modal Id="@ModalId" Title="@ModalTitle">
   <EditForm Model="@AddNewLeave" OnValidSubmit="OnSave" class="position-relative ">
     <DataAnnotationsValidator/>
     @if (IsLoading)
     {
       <DisplaySpinner ClassName="bg-opacity-0"/>
     }
-    @if (ConnectedUser.Role == UserRole.Admin)
+    @if (ConnectedUser?.Role == UserRole.Admin && !IsModification)
     {
       <div class="form-group">
         <label for="EmployeeId">Choisissez l'employé</label>
@@ -32,7 +24,7 @@
       </div>
     }
     <div class="form-group">
-      <label for="LeaveType">Sélectionnez un type de congé</label>
+      <label for="LeaveType" class="w-100 text-start">Sélectionnez un type de congé</label>
       <select Id="LeaveType" @bind-Value="AddNewLeave.LeaveType" @bind-Value:event="onchange" class="form-control">
         @foreach (string item in LeaveTypesValues)
         {
@@ -42,12 +34,12 @@
       <ValidationMessage For="@(() => AddNewLeave.LeaveType)"/>
     </div>
     <div class="form-group">
-      <label for="StartDate">Date de début</label>
+      <label for="StartDate" class="w-100 text-start">Date de début</label>
       <InputDate Id="StartDate" @bind-Value="AddNewLeave.StartDate" class="form-control"/>
       <ValidationMessage For="@(() => AddNewLeave.StartDate)"/>
     </div>
     <div class="form-group">
-      <label for="EndDate">Date de fin</label>
+      <label for="EndDate" class="w-100 text-start">Date de fin</label>
       <InputDate Id="EndDate" @bind-Value="AddNewLeave.EndDate" class="form-control"/>
       <ValidationMessage For="@(() => AddNewLeave.EndDate)"/>
     </div>
@@ -56,7 +48,7 @@
         <i class="fas fa-times"></i> Fermer
       </button>
       <button type="submit" class="btn btn-primary btn-save" disabled="@IsLoading">
-        <i class="fas fa-plus"></i> Ajouter
+        <i class="fas fa-plus"></i> @SubmitBtnText
       </button>
     </div>
   </EditForm>

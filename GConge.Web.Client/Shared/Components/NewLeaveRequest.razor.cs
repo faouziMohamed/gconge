@@ -1,30 +1,32 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Reflection;
+﻿using System.Reflection;
 using GConge.Models.DTOs.Auth;
 using GConge.Models.DTOs.Employees;
 using GConge.Models.DTOs.LeaveRequest;
+using GConge.Models.Forms;
 using GConge.Models.Models;
-using GConge.Models.Validator;
 using GConge.Web.Client.Services.Contracts;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 
 namespace GConge.Web.Client.Shared.Components;
 
-public class NewLeaveRequestBase : ComponentBase, IAsyncDisposable
-
+public class NewLeaveRequestBase : ComponentBase
 {
+
   protected readonly AddNewLeaveRequest AddNewLeave = new();
   protected readonly List<string> LeaveTypesValues = new();
   private IJSObjectReference? module;
-  [Inject] protected IEmployeeService EmployeesService { get; set; } = null!;
-  [Inject] protected IEmployeeLocalStorageService EmployeesLocalStorageService { get; set; } = null!;
+  [Parameter] public bool IsModification { get; set; }
+  [Parameter] public string ModalId { get; set; }
+  [Parameter] public string ModalTitle { get; set; }
+  [Inject] public IEmployeeService EmployeesService { get; set; } = null!;
+  [Inject] public IEmployeeLocalStorageService EmployeesLocalStorageService { get; set; } = null!;
 
   [Parameter]
-  public CreateLeaveRequestDto AddedLeave { get; set; }
+  public CreateLeaveRequestDto Leave { get; set; }
 
   [Parameter]
-  public EventCallback<CreateLeaveRequestDto> AddedLeaveChanged { get; set; }
+  public EventCallback<CreateLeaveRequestDto> LeaveChanged { get; set; }
 
   [Parameter] public EventCallback OnSubmit { get; set; }
   protected bool IsLoading { get; set; }
@@ -33,38 +35,38 @@ public class NewLeaveRequestBase : ComponentBase, IAsyncDisposable
   [Parameter]
   public UserDto ConnectedUser { get; set; }
 
+  [Parameter] public string SubmitBtnText { get; set; } = "Ok";
+
   // inject js runtime
   [Inject]
-  private IJSRuntime JsRuntime { get; set; }
+  public IJSRuntime JsRuntime { get; set; }
 
-  public List<EmployeeDto> EmployeesList { get; set; } = new();
+  protected List<EmployeeDto> EmployeesList { get; set; } = new();
 
-  public async ValueTask DisposeAsync()
-  {
-    if (module is not null)
-    {
-      await module.DisposeAsync();
-    }
-  }
 
   protected async override Task OnAfterRenderAsync(bool firstRender)
   {
     if (firstRender)
     {
-      // import the './Js/NewLeaveRequest.razor.js' module
-      module = await JsRuntime.InvokeAsync<IJSObjectReference>("import", "./Js/NewLeaveRequest.js");
+      // import the './Js/utils.js' module
+      module = await JsRuntime.InvokeAsync<IJSObjectReference>("import", "./Js/utils.js");
     }
   }
+
   protected async Task OnSave()
   {
     await OnValidSubmit();
 
-    if (ErrorMessage == null && module != null)
+    if (ErrorMessage == null)
     {
-      // call the function CloseModal from the imported module
-      await module.InvokeVoidAsync("CloseModal");
+      if (module is not null)
+      {
+        // call the function CloseModal from the imported module
+        await module.InvokeVoidAsync("CloseModal", ModalId);
+      }
     }
   }
+
   protected async override Task OnInitializedAsync()
   {
     var leavesTypes = new LeaveTypes();
@@ -91,10 +93,10 @@ public class NewLeaveRequestBase : ComponentBase, IAsyncDisposable
 
     try
     {
-      AddedLeave.EndDate = AddNewLeave.EndDate;
-      AddedLeave.StartDate = AddNewLeave.StartDate;
-      AddedLeave.LeaveType = AddNewLeave.LeaveType;
-      await AddedLeaveChanged.InvokeAsync(AddedLeave);
+      Leave.EndDate = AddNewLeave.EndDate;
+      Leave.StartDate = AddNewLeave.StartDate;
+      Leave.LeaveType = AddNewLeave.LeaveType;
+      await LeaveChanged.InvokeAsync(Leave);
       await OnSubmit.InvokeAsync();
     }
     catch (Exception e)
@@ -105,23 +107,5 @@ public class NewLeaveRequestBase : ComponentBase, IAsyncDisposable
     {
       IsLoading = false;
     }
-  }
-
-  protected sealed record AddNewLeaveRequest
-  {
-    [Required]
-    public string LeaveType { get; set; } = LeaveTypes.VacationLeave;
-
-    [Required]
-    [DateRange("01-01-2023", ErrorMessage = "La date doit être en la date d'aujourd'hui et 01-01-2023")]
-    [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}")]
-    public DateTime StartDate { get; set; } = DateTime.Now;
-
-    [Required]
-    [DateRange("01-01-2023", ErrorMessage = "La date doit être en la date d'aujourd'hui et 01-01-2023")]
-    [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}")]
-    public DateTime EndDate { get; set; } = DateTime.Now.AddDays(1);
-
-    public string? EmployeeId { get; set; }
   }
 }

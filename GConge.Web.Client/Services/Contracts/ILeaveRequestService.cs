@@ -8,9 +8,9 @@ public interface ILeaveRequestService
   Task<LeaveRequestDto?> GetLeaveRequestById(int leaveRequestId, int employeeId);
   Task<List<LeaveRequestDto>> GetLeaveRequestsByEmployeeId(int employeeId);
   Task<LeaveRequestDto> CreateLeaveRequest(CreateLeaveRequestDto leaveRequest);
-  Task<LeaveRequestDto?> UpdateLeaveRequest(AdminUpdateLeaveRequestDto leaveRequest);
+  Task<LeaveRequestDto?> UpdateLeaveRequest(UpdateLeaveRequestDto leaveRequest);
   Task<LeaveRequestDto?> ApproveLeaveRequest(int leaveRequestId);
   Task<LeaveRequestDto?> RejectLeaveRequest(int leaveRequestId);
-  Task<LeaveRequestDto?> CancelLeaveRequest(int leaveRequestId);
+  Task<LeaveRequestDto?> CancelLeaveRequest(int leaveRequestId, int employeeId);
   Task<LeaveRequestDto?> DeleteLeaveRequest(int leaveRequestId);
 }

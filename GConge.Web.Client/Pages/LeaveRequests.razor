@@ -4,6 +4,35 @@
 @page "/manage-requests"
 @inherits LeaveRequestBase
 
+@code {
+  public string ModalId { get; set; } = $"leave-request-modal{Guid.NewGuid():N}";
+  protected async Task OnDelete(LeaveRequestDto removedRequest)
+  {
+    await LeaveRequestService.DeleteLeaveRequest(removedRequest.LeaveRequestId);
+    await LeaveRequestLocalStorage.DeleteFromLocalStorage(removedRequest);
+    LeaveRequests = LeaveRequests.Where(x => x.LeaveRequestId != removedRequest.LeaveRequestId).ToList();
+  }
+
+  protected async Task OnUpdate(LeaveRequestDto updatedRequest)
+  {
+
+    var requestUpdated = new UpdateLeaveRequestDto
+    {
+      DateUpdated = DateTime.Now,
+      EndDate = updatedRequest.EndDate,
+      StartDate = updatedRequest.StartDate,
+      LeaveRequestId = updatedRequest.LeaveRequestId,
+      RequestingEmployeeId = ConnectedUser!.EmployeeId,
+      Status = updatedRequest.Status,
+      LeaveType = updatedRequest.LeaveType
+    };
+    await LeaveRequestService.UpdateLeaveRequest(requestUpdated);
+    await LeaveRequestLocalStorage.UpdateLocalStorage(updatedRequest);
+    LeaveRequests = LeaveRequests.Where(x => x.LeaveRequestId != updatedRequest.LeaveRequestId).ToList();
+    LeaveRequests.Add(updatedRequest);
+  }
+}
+
 <ContentWrapper>
   <div class="container">
     <h1>
@@ -30,30 +59,40 @@
           Aucune demande de congé n'a été trouvée.
         </p>
       </div>
+      <!-- Button trigger modal -->
+      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#@ModalId">
+        <i class="fas fa-plus"/> Nouvelle demande
+      </button>
 
-      <a href="LeaveRequest/new" class="btn btn-primary text-white">
-        <i class="fas fa-plus-square"></i> &nbsp; Nouveau demande
-      </a>
       <NewLeaveRequest
-        @bind-AddedLeave=NewAddedLeaveRequest
+        @bind-Leave=NewAddedLeaveRequest
         ConnectedUser="ConnectedUser"
-        OnSubmit="OnSubmit"/>
+        OnSubmit="OnSubmit"
+        ModalId="@ModalId"
+        SubmitBtnText="Ajouter"
+        ModalTitle="Nouvelle demande de congé"/>
     }
     else
     {
+      <!-- Button trigger modal -->
+      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#@ModalId">
+        <i class="fas fa-plus"/> Nouvelle demande
+      </button>
       <NewLeaveRequest
-        @bind-AddedLeave=NewAddedLeaveRequest
+        @bind-Leave=NewAddedLeaveRequest
         ConnectedUser="ConnectedUser"
-        OnSubmit="OnSubmit"/>
+        OnSubmit="OnSubmit"
+        SubmitBtnText="Ajouter"
+        ModalId="@ModalId"
+        ModalTitle="Nouvelle demande de congé"/>
       <table class="table">
-        <tr id="items">
-          <th class="pr-2">Nom</th>
-          <th class="px-2">Prénom</th>
-          <th class="px-2">Type de congé</th>
-          <th class="px-2">Service</th>
-          <th class="px-2">Date debut</th>
-          <th class="px-2">Date fin</th>
-
+        <tr>
+          <th class="text-center">Nom</th>
+          <th class="text-center">Prénom</th>
+          <th class="text-center">Type de congé</th>
+          <th class="text-center">Service</th>
+          <th class="text-center">Date de debut</th>
+          <th class="text-center">Date de fin</th>
           <th class="px-0 text-center text-w">
             Décision du responsable
           </th>
@@ -66,7 +105,11 @@
         </tr>
         @foreach (var request in LeaveRequests)
         {
-          <DisplayRowOfLeaveRequest Row="@request" CurrentUser="@ConnectedUser"/>
+          <DisplayRowOfLeaveRequest
+            Row="@request"
+            CurrentUser="@ConnectedUser"
+            OnDelete="@OnDelete"
+            OnUpdate="@OnUpdate"/>
         }
       </table>
     }

@@ -37,13 +37,6 @@
     font-weight: 600;
 }
 
-.text-2 {
-    font-size: 2rem;
-}
-
-::deep .text-xs {
-    font-size: 0.75rem;
-}
 
 .inset-0 {
     inset: 0;

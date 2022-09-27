@@ -11,13 +11,13 @@ public sealed class UserLocalStorageService : IUserLocalStorageService
   private const string Key = "CurrentUser";
   private readonly IAuthService _authService;
   private readonly ILocalStorageService _localStorageService;
-  private readonly NavigationManager _navigationManager;
+  private readonly NavigationManager _router;
 
-  public UserLocalStorageService(ILocalStorageService localStorageService, IAuthService authService, NavigationManager navigationManager)
+  public UserLocalStorageService(ILocalStorageService localStorageService, IAuthService authService, NavigationManager router)
   {
     _localStorageService = localStorageService;
     _authService = authService;
-    _navigationManager = navigationManager;
+    _router = router;
   }
   public async Task<UserDto?> GetUserFromLocalStorage()
   {
@@ -64,7 +64,7 @@ public sealed class UserLocalStorageService : IUserLocalStorageService
   public async Task<bool> AssertUserIsLoggedInOrRedirectToLogin(string redirectUrl)
   {
     if (await CheckIfUserIsLoggedIn()) return true;
-    _navigationManager.NavigateTo($"/login?redirectto={redirectUrl}");
+    _router.NavigateTo($"/login?redirectto={redirectUrl}");
     return false;
   }
 }

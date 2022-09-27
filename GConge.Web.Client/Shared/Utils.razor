@@ -1,0 +1,27 @@
+﻿@code
+{
+  [Inject]
+  static JSRuntime JsRuntime { get; set; }
+
+  private IJSObjectReference? module;
+
+  protected async override Task OnAfterRenderAsync(bool firstRender)
+  {
+    if (firstRender)
+    {
+      module = await JsRuntime.InvokeAsync<IJSObjectReference>("import", "./Js/utils.js");
+    }
+  }
+  public async Task CloseModal()
+  {
+  // call the function CloseModal from the imported module
+    await module.InvokeVoidAsync("CloseModal", "AddNewLeave");
+  }
+  public async ValueTask DisposeAsync()
+  {
+    if (module is not null)
+    {
+      await module.DisposeAsync();
+    }
+  }
+}

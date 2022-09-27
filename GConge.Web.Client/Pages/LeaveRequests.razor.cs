@@ -1,4 +1,5 @@
-﻿using GConge.Models.DTOs.Auth;
+﻿using Blazored.LocalStorage;
+using GConge.Models.DTOs.Auth;
 using GConge.Models.DTOs.LeaveRequest;
 using GConge.Models.Models;
 using GConge.Web.Client.Services.Contracts;
@@ -14,7 +15,7 @@ public class LeaveRequestBase : ComponentBase
   [Inject] protected IUserLocalStorageService UserLocalStorage { get; set; }
   [Inject] protected IUserLocalStorageService EmployeeLocalStorage { get; set; }
   [Inject] protected IEmployeeService EmployeeService { get; set; }
-  [Inject] protected NavigationManager NavigationManager { get; set; }
+  [Inject] protected NavigationManager Router { get; set; }
   [Inject] protected ILeaveRequestService LeaveRequestService { get; set; }
   [Inject] protected ILeaveRequestLocalStorageService LeaveRequestLocalStorage { get; set; }
   protected UserDto? ConnectedUser { get; set; }
@@ -23,20 +24,36 @@ public class LeaveRequestBase : ComponentBase
   protected List<LeaveRequestDto> LeaveRequests { get; set; } = new();
   protected CreateLeaveRequestDto NewAddedLeaveRequest { get; set; } = new();
 
+  [Inject]
+  public ILocalStorageService LocalStorageService { get; set; }
+
+  protected async Task Disconnect()
+  {
+    string uri = Router.ToBaseRelativePath(Router.Uri);
+    await LocalStorageService.ClearAsync();
+    var redirectQuery = $"?redirectTo=/{uri}";
+    Router.NavigateTo(uri: $"/login{(uri == "" ? "" : redirectQuery)}", true);
+  }
+
   protected async override Task OnInitializedAsync()
   {
     IsLoading = true;
 
     try
     {
-      string uri = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+      string uri = Router.ToBaseRelativePath(Router.Uri);
       bool isConnected = await UserLocalStorage.AssertUserIsLoggedInOrRedirectToLogin($"/{uri}");
 
-      if (!isConnected) { return; }
+      if (!isConnected)
+      {
+        await Disconnect();
+        return;
+      }
+
       await LeaveRequestLocalStorage.ClearLocalStorage();
       ConnectedUser = await UserLocalStorage.GetUserFromLocalStorage();
 
-      LeaveRequests = ConnectedUser!.Role switch
+      LeaveRequests = ConnectedUser?.Role switch
       {
         UserRole.Admin => await LeaveRequestService.GetLeaveRequests(),
         _ => await LeaveRequestService.GetLeaveRequestsByEmployeeId(ConnectedUser!.EmployeeId)

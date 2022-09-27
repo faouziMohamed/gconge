@@ -1,0 +1,39 @@
+﻿@code
+{
+  [Parameter]
+  public RenderFragment ChildContent { get; set; }
+
+  [Parameter]
+  public string ModalTitle { get; set; }
+
+  [Parameter]
+  public string ModalId { get; set; }
+
+  [Parameter]
+  public EventCallback OnSubmit { get; set; }
+
+  [Parameter]
+  public string AcceptButtonText { get; set; } = "Oui";
+
+  [Parameter]
+  public string CancelButtonText { get; set; } = "Non";
+
+  private async Task OnClick()
+  {
+    await OnSubmit.InvokeAsync();
+  }
+}
+
+<Modal Title="@ModalTitle" Id="@ModalId">
+  <div class="modal-body">
+    @ChildContent
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+      @CancelButtonText
+    </button>
+    <button type="button" class="btn btn-danger" data-dismiss="modal" @onclick="OnClick">
+      @AcceptButtonText
+    </button>
+  </div>
+</Modal>

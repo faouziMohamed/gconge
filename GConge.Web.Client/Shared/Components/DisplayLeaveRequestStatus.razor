@@ -1,0 +1,83 @@
+﻿@inherits DisplayLeaveRequestStatusBase
+
+@code {
+
+}
+
+@{
+  var dict = new Dictionary<string, ColIcon>
+  {
+    { LeaveRequestStatus.Approved, new ColIcon("text-success", "fas fa-check-circle") },
+    { LeaveRequestStatus.Rejected, new ColIcon("text-danger", "fas fa-minus-circle") },
+    { LeaveRequestStatus.Cancelled, new ColIcon("text-danger", "fas fa-ban") },
+    { LeaveRequestStatus.Pending, new ColIcon("text-danger", "fas fa-clock") }
+  };
+}
+<ConfirmModal ModalId="@ModalId" ModalTitle="@ModalTitle" OnSubmit="@OnSubmit">
+  @if (IsLoading)
+  {
+    <DisplaySpinner ClassName="bg-opacity-0"/>
+  }
+  <i class="@ModalIcon @ModalTextColor fs-3"></i>
+  <p class="fs-6 @ModalTextColor ">@ModalText</p>
+</ConfirmModal>
+
+@if (CurrentUser.Role == UserRole.Admin)
+{
+  if (Row.Status is LeaveRequestStatus.Pending or "Pending")
+  {
+    // ModalId = $"modal{Guid.NewGuid():N}";
+    ModalTitle = "Approve Leave Request";
+
+    <div class="d-flex gap-2 ">
+      <button
+        data-bs-toggle="modal"
+        data-bs-target="#@ModalId"
+        class="btn fs-4 p-1" @onclick="@OnApprovePrompt" title="Approuvez cette demande">
+        <i class="fas fa-check-circle text-success "/>
+      </button>
+      <button
+        data-bs-toggle="modal"
+        data-bs-target="#@ModalId"
+        class="btn fs-5 p-1" @onclick="@OnRejectPrompt" title="Refuser cette demande">
+        <i class="fas fa-times-circle text-danger"/>
+      </button>
+    </div>
+  }
+  else
+  {
+    <span class="@dict[Row.Status].Color">
+      @Row.Status
+    </span>
+    <i class="@dict[Row.Status].Icon @dict[Row.Status].Color"/>
+  }
+}
+else if (CurrentUser.Role == UserRole.User)
+{
+  <div class="d-flex gap-1 align-items-center ">
+    @switch (Row.Status)
+    {
+      case LeaveRequestStatus.Approved:
+      case LeaveRequestStatus.Rejected:
+      case LeaveRequestStatus.Cancelled:
+        <span class="@dict[Row.Status].Color">
+          @Row.Status
+        </span>
+        <i class="@dict[Row.Status].Icon @dict[Row.Status].Color"/>
+        break;
+      default:
+        <span>
+          @Row.Status
+        </span>
+        <span>|</span>
+        <button
+          data-bs-toggle="modal"
+          data-bs-target="#@ModalId"
+          @onclick="@OnCancelPrompt"
+          title="Cliquez ici pour annuler cette demande" class="btn fs-6 p-1">
+          <i class="fas fa-trash text-danger"/>
+        </button>
+        break;
+    }
+  </div>
+}

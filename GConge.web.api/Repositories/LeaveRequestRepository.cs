@@ -92,7 +92,7 @@ public sealed class LeaveRequestRepository : ILeaveRequestRepository
     return addedLeaveRq.Entity;
   }
 
-  public async Task<LeaveRequest> UpdateLeaveRequest(AdminUpdateLeaveRequestDto dto)
+  public async Task<LeaveRequest> UpdateLeaveRequest(UpdateLeaveRequestDto dto)
   {
     // make sure the requesting employee exist
     var employeeRepo = new EmployeeRepository(_context);
@@ -104,19 +104,21 @@ public sealed class LeaveRequestRepository : ILeaveRequestRepository
     }
 
     var leaveRequest = await _context.LeaveRequests
-      .FirstOrDefaultAsync(x => x.Id == dto.Id);
+      .IncludeEmployees()
+      .FirstOrDefaultAsync(x => x.Id == dto.LeaveRequestId);
 
     if (leaveRequest == null) throw new Exception("Leave request not found");
 
-    leaveRequest.RequestingEmployeeId = dto.RequestingEmployeeId;
     leaveRequest.StartDate = dto.StartDate;
     leaveRequest.EndDate = dto.EndDate;
     leaveRequest.Status = dto.Status;
     leaveRequest.DateUpdated = DateTime.Now;
+    leaveRequest.LeaveType = dto.LeaveType;
+    leaveRequest.DateUpdated = dto.DateUpdated;
 
     EntityEntry<LeaveRequest> updated = _context.LeaveRequests.Update(leaveRequest);
     await _context.SaveChangesAsync();
-    return updated.Entity;
+    return leaveRequest;
   }
 
   public async Task<LeaveRequest?> CancelLeaveRequest(int id)

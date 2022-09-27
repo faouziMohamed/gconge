@@ -79,3 +79,34 @@ main {
         padding-right: 1.5rem !important;
     }
 }
+
+
+/*Tables */
+::deep table {
+    color: #404040;
+}
+
+::deep th {
+    border-bottom: 3px solid #450ba1;
+    padding: 5px 1.2rem;
+    font-weight: 900;
+    font-size: .88rem;
+
+}
+
+::deep td {
+    font-weight: 400;
+    padding: 5px 1rem;
+    font-size: .88rem;
+    text-align: center;
+
+}
+   
+::deep tr:nth-child(2n) {
+    background-color: #f6f8f8;
+}
+
+::deep tr:nth-child(2n) td {
+    border-bottom: 1px solid #e0e0e0;
+    border-top: 1px solid #e0e0e0;
+}

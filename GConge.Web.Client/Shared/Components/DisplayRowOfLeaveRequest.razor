@@ -1,51 +1,91 @@
 ﻿@* ReSharper disable Html.TagShouldNotBeSelfClosed *@
+@inherits DisplayRowOfLeaveRequestBase
 
-@code
-{
-#pragma warning disable CS8618
-  [Parameter]
-  public LeaveRequestDto Row { get; set; }
+@code {
+  private void OnRejectRequest(LeaveRequestDto obj)
+  {
+    LeaveRequestService.RejectLeaveRequest(obj.LeaveRequestId);
+    Console.WriteLine("Leave request rejected");
+  }
+  private void OnApproveRequest(LeaveRequestDto obj)
+  {
 
-  [Parameter]
-  public UserDto CurrentUser { get; set; }
+    LeaveRequestService.ApproveLeaveRequest(obj.LeaveRequestId);
+    Console.WriteLine("Leave request approved");
+  }
 }
 
-<tr>
-  <td class="rx-2">@Row.Employee.FirstName</td>
-  <td class="px-2">@Row.Employee.LastName</td>
-  <td class="px-2">@Row.LeaveType</td>
-  <td class="px-2">@Row.Employee.Service</td>
-  <td class="px-2">@Row.StartDate.ToString("dd/MM/yyyy")</td>
-  <td class="px-2">@Row.EndDate.ToString("dd/MM/yyyy")</td>
+<tr class="">
+  <td class="text-xs rx-2">@Row.Employee.FirstName</td>
+  <td class=" text-xs px-2">@Row.Employee.LastName</td>
+  <td>@Row.LeaveType</td>
+  <td>@Row.Employee.Service</td>
+  <td>@Row.StartDate.ToString("dd/MM/yyyy")</td>
+  <td>@Row.EndDate.ToString("dd/MM/yyyy")</td>
   <td class="px-2 text-center">
-    @switch (CurrentUser.Role)
-    {
-      case UserRole.Admin:
-        <div class="d-flex gap-1 ">
-          <button class="btn fs-3 p-1">
-            <i class="fas fa-check-circle text-success "/>
-          </button>
-          <button class="btn fs-3 p-1">
-            <i class="fas fa-times-circle text-danger"/>
-          </button>
-        </div>
-        break;
-      case UserRole.User:
-        @Row.Status
-        break;
-    }
+    <DisplayLeaveRequestStatus
+      @bind-Row="@Row"
+      CurrentUser="CurrentUser"
+      OnApproveRequest="OnApproveRequest"
+      OnRejectRequest="OnRejectRequest"/>
   </td>
-  <td class="px-2">
-    <button class="btn fs-3 text-success">
+  <td>
+    @{
+      bool approved = Row.Status is LeaveRequestStatus.Approved or LeaveRequestStatus.Rejected or LeaveRequestStatus.Cancelled;
+      LeaveReqToModify = new CreateLeaveRequestDto
+      {
+        RequestingEmployeeId = Row.LeaveRequestId,
+        StartDate = Row.StartDate,
+        EndDate = Row.EndDate,
+        LeaveType = Row.LeaveType
+      };
+    }
+    <NewLeaveRequest
+      @bind-Leave="@LeaveReqToModify"
+      ConnectedUser="CurrentUser"
+      OnSubmit="OnSubmit"
+      ModalId="@ModalId"
+      IsModification="true"
+      SubmitBtnText="Enregistrer"
+      ModalTitle="Modification de la demande de congé"/>
+
+    <button
+      data-bs-toggle="modal"
+      data-bs-target="#@ModalId"
+      title="Cliquez ici pour voir les modifier cette demande"
+      class="update-btn btn fs-5 text-dark border-0" disabled="@approved">
       <i class="fas fa-pencil "/>
     </button>
   </td>
   @if (CurrentUser.Role == UserRole.Admin)
   {
-    <td class="pl-2">
-      <a href="LeaveRow/1/delete">
+    ModalId = $"deleteLeaveRequestModal{Guid.NewGuid():N}";
+    <td title="Supprimer cette demande de la base de données">
+      <ConfirmModal
+        ModalId="@ModalId"
+        OnSubmit="OnDeleteRequest"
+        ModalTitle="Suppression de la demande de congé">
+        @if (IsLoading)
+        {
+          <DisplaySpinner ClassName="bg-opacity-0"/>
+        }
+        <i class="fas fa-exclamation-triangle text-danger fs-2"></i>
+        <p class="text-danger fs-6">
+          Êtes-vous sûr de vouloir supprimer cette demande de congé pour motif
+          <span class="text-danger fw-bold">@Row.LeaveType</span> ?
+        </p>
+        <p class="text-danger fs-6">
+          Cette action est irréversible.
+        </p>
+      </ConfirmModal>
+      <button
+        data-bs-toggle="modal"
+        data-bs-target="#@ModalId"
+        title="Cliquez ici pour supprimer cette demande"
+        disabled="@IsLoading"
+        class="btn text-danger">
         <i class="fas fa-trash"/>
-      </a>
+      </button>
     </td>
   }
 </tr>

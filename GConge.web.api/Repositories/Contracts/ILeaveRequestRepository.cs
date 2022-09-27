@@ -9,7 +9,7 @@ public interface ILeaveRequestRepository
   Task<List<LeaveRequest>> GetLeaveRequestByEmployeeId(int id);
   Task<List<LeaveRequest>> GetLeaveRequests();
   Task<LeaveRequest> AddLeaveRequest(CreateLeaveRequestDto createLeaveRequestDto);
-  Task<LeaveRequest> UpdateLeaveRequest(AdminUpdateLeaveRequestDto dto);
+  Task<LeaveRequest> UpdateLeaveRequest(UpdateLeaveRequestDto dto);
   Task<LeaveRequest> DeleteLeaveRequest(int id);
   Task<LeaveRequest?> ApproveLeaveRequest(int id);
   Task<LeaveRequest?> RejectLeaveRequest(int id);
